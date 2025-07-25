@@ -1,0 +1,2 @@
+# kidney_disease_classification
+Deep_learning_project for kidney disease classification
