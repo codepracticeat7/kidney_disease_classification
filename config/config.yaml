@@ -7,8 +7,13 @@ data_ingestion:
   local_data_file: artifacts/data_ingestion/data.zip
   unzip_dir: artifacts/data_ingestion
 prepare_basemodel:
-  basemodel_dir: artifacts/models
-  root_dir: artifacts
-  updated_base_model_path: artifacts/models/updated
+  base_model_dir: artifacts/model/base_model.h5
+  root_dir: artifacts/model
+  updated_base_model_path: artifacts/model/updated.h5
 
+training:
+  root_dir: artifacts/models
+  updated_base_model_path: artifacts/model/updated.h5
+  trained_model_path: artifacts/model/training20250814_152650
+  trained_model_name: vgg16model.h5
 
