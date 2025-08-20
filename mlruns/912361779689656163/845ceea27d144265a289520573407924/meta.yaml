@@ -1,0 +1,15 @@
+artifact_uri: file:///K:/data%20science/kidney_disease_classification_project/mlruns/912361779689656163/845ceea27d144265a289520573407924/artifacts
+end_time: 1755622419964
+entry_point_name: ''
+experiment_id: '912361779689656163'
+lifecycle_stage: active
+run_id: 845ceea27d144265a289520573407924
+run_name: handsome-donkey-535
+run_uuid: 845ceea27d144265a289520573407924
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1755622393063
+status: 3
+tags: []
+user_id: hipho

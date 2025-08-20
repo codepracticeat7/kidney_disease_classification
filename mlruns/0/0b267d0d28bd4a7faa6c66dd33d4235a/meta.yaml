@@ -1,0 +1,15 @@
+artifact_uri: file:///K:/data%20science/kidney_disease_classification_project/mlruns/0/0b267d0d28bd4a7faa6c66dd33d4235a/artifacts
+end_time: 1755618797117
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 0b267d0d28bd4a7faa6c66dd33d4235a
+run_name: unequaled-quail-611
+run_uuid: 0b267d0d28bd4a7faa6c66dd33d4235a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1755618761658
+status: 3
+tags: []
+user_id: hipho

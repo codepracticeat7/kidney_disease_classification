@@ -9,6 +9,8 @@ from box import ConfigBox
 from pathlib import Path
 from typing import Any
 import base64
+import time
+import wmi
 
 
 
@@ -147,3 +149,23 @@ def save_json(path: Path, data: dict):
         json.dump(data, f, indent=4)
 
     logger.info(f"json file saved at: {path}")
+@ensure_annotations
+def get_cpu_temp():
+    TEMP_THRESHOLD = 85
+    w = wmi.WMI(namespace="root\\wmi")
+    temps = w.MSAcpi_ThermalZoneTemperature()
+    if temps:
+        return (temps[0].CurrentTemperature / 10.0) - 273.15
+    return None
+
+@ensure_annotations
+def monitor_training():
+    while True:
+        temp = get_cpu_temp()
+        if temp:
+            print(f"🌡️ CPU Temp: {temp:.2f}°C")
+            if temp > TEMP_THRESHOLD:
+                print("🔥 Temperature too high! Pausing training...")
+                os.system("pause")  # You can replace this with a more graceful pause
+                break
+        time.sleep(5)

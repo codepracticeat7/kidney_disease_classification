@@ -1,15 +1,31 @@
 from datetime import datetime
 import os
 import subprocess
-from cnnclassifier.utils.common import read_yaml, create_directories
+from cnnclassifier.utils.common import read_yaml, create_directories,get_cpu_temp,monitor_training
 from cnnclassifier.config.configuration import ConfigurationManager
 import tensorflow as tf
+from tensorflow.keras.callbacks import EarlyStopping
+import threading
+
+
+from cnnclassifier.components.cpu_monitor import CPUUsageMonitor,  CPUMonitorCallback,gmail_service# assuming your monitor class is in cpu_monitor.py
+
+
+
+
+
 from cnnclassifier import logger
 
 def main():
     o=ConfigurationManager()
     m=o.get_prepare_Trainingconfig()
     load_model=tf.keras.models.load_model(m.updated_base_model_path)
+    early_stop = EarlyStopping(
+        monitor='val_loss',       # You can also use 'val_accuracy'
+        patience=2,               # Number of epochs to wait before stopping
+        restore_best_weights=True
+    )
+
     datagenerator_kwargs = dict(
                 rescale = 1./255,
                 validation_split=0.20
@@ -48,12 +64,40 @@ def main():
 
     steps_per_epoch = train_generator.samples // train_generator.batch_size
     validation_steps =valid_generator.samples // valid_generator.batch_size
-    load_model.fit(train_generator,
-                epochs=m.params_epochs,
-                steps_per_epoch=steps_per_epoch,
-                validation_steps=validation_steps,
-                validation_data=valid_generator
+    service = gmail_service()
+
+    # 2. Start CPU Monitor in background
+    monitor = CPUUsageMonitor(
+        gmail_service=service,
+        sender=os.getenv("sender"),     # replace with your Gmail
+        receiver=os.getenv("receiver"),     # replace with recipient
+        threshold=85,
+        check_interval=5
+    )
+    monitor.start()
+    
+    
+
+    # Now start training
+    try:
+        
+
+        load_model.fit(train_generator,
+                    epochs=m.params_epochs,
+                    steps_per_epoch=steps_per_epoch,
+                    validation_steps=validation_steps,
+                    validation_data=valid_generator,
+                    callbacks=[
+                CPUMonitorCallback(monitor),
+                EarlyStopping(
+                    monitor="val_loss",       # metric to watch
+                    patience=3,               # stop after 3 bad epochs
+                    restore_best_weights=True # rollback to best weights
                 )
+            ]
+        )
+    except KeyboardInterrupt:
+        print("🛑 Training interrupted manually.")
 
     load_model.save(trained_model_path)
     

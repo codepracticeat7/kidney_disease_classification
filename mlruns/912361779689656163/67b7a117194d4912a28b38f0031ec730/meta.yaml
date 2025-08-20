@@ -1,0 +1,15 @@
+artifact_uri: file:///K:/data%20science/kidney_disease_classification_project/mlruns/912361779689656163/67b7a117194d4912a28b38f0031ec730/artifacts
+end_time: 1755621739450
+entry_point_name: ''
+experiment_id: '912361779689656163'
+lifecycle_stage: active
+run_id: 67b7a117194d4912a28b38f0031ec730
+run_name: judicious-turtle-897
+run_uuid: 67b7a117194d4912a28b38f0031ec730
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1755621714045
+status: 3
+tags: []
+user_id: hipho

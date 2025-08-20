@@ -1,5 +1,4 @@
 import tensorflow as tf
-import os
 from pathlib import Path
 import mlflow
 import mlflow.keras
@@ -44,13 +43,6 @@ class Evaluation:
     
 
     def evaluation(self):
-        print("Final model path being used:", self.config.path_of_model)
-        
-        assert os.path.isfile(self.config.path_of_model), f"Invalid model path: {self.config.path_of_model}"
-        if not os.path.exists(self.config.path_of_model) or not os.path.isfile(self.config.path_of_model):
-
-            raise FileNotFoundError(f"Model file not found at {self.config.path_of_model}")
-
         self.model = self.load_model(self.config.path_of_model)
         self._valid_generator()
         self.score = self.model.evaluate(self.valid_generator)
@@ -58,6 +50,8 @@ class Evaluation:
 
     def save_score(self):
         scores = {"loss": self.score[0], "accuracy": self.score[1]}
+        save_json(path=Path("scores.json"), data=scores)
+
     
     def log_into_mlflow(self):
         mlflow.set_registry_uri(self.config.mlflow_uri)
@@ -75,8 +69,6 @@ class Evaluation:
                 # There are other ways to use the Model Registry, which depends on the use case,
                 # please refer to the doc for more information:
                 # https://mlflow.org/docs/latest/model-registry.html#api-workflow
-                mlflow.keras.log_model(self.model, "model", registered_model_name="VGG16Model")
+                mlflow.keras.log_model(self.model, "model")
             else:
                 mlflow.keras.log_model(self.model, "model")
-
-    

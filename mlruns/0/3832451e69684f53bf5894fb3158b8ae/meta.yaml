@@ -1,0 +1,15 @@
+artifact_uri: file:///K:/data%20science/kidney_disease_classification_project/mlruns/0/3832451e69684f53bf5894fb3158b8ae/artifacts
+end_time: 1755702307980
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 3832451e69684f53bf5894fb3158b8ae
+run_name: glamorous-horse-885
+run_uuid: 3832451e69684f53bf5894fb3158b8ae
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1755702268209
+status: 3
+tags: []
+user_id: hipho

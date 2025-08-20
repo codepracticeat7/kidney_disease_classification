@@ -1,0 +1,15 @@
+artifact_uri: file:///K:/data%20science/kidney_disease_classification_project/mlruns/0/159d903441104fc284d1c84521cd2eef/artifacts
+end_time: 1755621239792
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 159d903441104fc284d1c84521cd2eef
+run_name: delicate-mouse-753
+run_uuid: 159d903441104fc284d1c84521cd2eef
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1755621208063
+status: 3
+tags: []
+user_id: hipho

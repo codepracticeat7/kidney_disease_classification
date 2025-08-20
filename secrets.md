@@ -1,0 +1,10 @@
+
+MLFLOW_TRACKING_URI=https://dagshub.com/albertmichael/kidney_disease_classification.mlflow
+MLFLOW_TRACKING_USERNAME=albertmichael
+MLFLOW_TRACKING_PASSWORD=1405544f0c62064850799e8d88424afc08d00759
+
+
+$env:MLFLOW_TRACKING_URI =" https://dagshub.com/albertmichael/kidney_disease_classification.mlflow"
+$env:MLFLOW_TRACKING_USERNAME="albertmichael"
+$env:MLFLOW_TRACKING_PASSWORD="b94e44f312726538e220f17ba3aae654912d65ce"
+b94e44f312726538e220f17ba3aae654912d65ce

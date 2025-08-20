@@ -16,4 +16,6 @@ training:
   updated_base_model_path: artifacts/model/updated.h5
   trained_model_path: artifacts/model/training20250814_152650
   trained_model_name: vgg16model.h5
+testing:
+  testing_data: artifacts\Test_Data\test
 

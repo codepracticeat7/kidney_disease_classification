@@ -1,0 +1,2 @@
+from cnnclassifier.components.memmory_opti import memmory_optimization
+clean_memory= memmory_optimization.clean_memory()

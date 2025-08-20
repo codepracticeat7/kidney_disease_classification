@@ -1,0 +1,15 @@
+artifact_uri: file:///K:/data%20science/kidney_disease_classification_project/mlruns/0/449726fa9c024a378d1d33d4814187dc/artifacts
+end_time: 1755531536156
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 449726fa9c024a378d1d33d4814187dc
+run_name: unleashed-lynx-381
+run_uuid: 449726fa9c024a378d1d33d4814187dc
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1755531504637
+status: 3
+tags: []
+user_id: hipho

@@ -39,7 +39,7 @@ class ConfigurationManager:
         config=self.config.training
         params=self.params
         print(config)
-        training_data=os.path.join(self.config.data_ingestion.unzip_dir,"data","kidney-ct-scan-image")
+        training_data=os.path.join(self.config.data_ingestion.unzip_dir,"train")
         Trainingconfig=trainingconfig(root_dir=config.root_dir,trained_model_name=str,
                                       updated_base_model_path=config.updated_base_model_path,
                                       training_data=Path(training_data),
@@ -63,9 +63,10 @@ class ConfigurationManager:
         model_path= real_path
 
         eval_config = EvaluationConfig(
+            testing_data=self.config.testing.testing_data,
             path_of_model=model_path,
             training_data="artifacts/data_ingestion/data/kidney-ct-scan-image",
-            mlflow_uri="https://dagshub.com/albertmichael/kidney_disease_classification.mlflow",
+            mlflow_uri=os.getenv("MLFLOW_TRACKING_URI"),
             all_params=self.params,
             params_image_size=self.params.IMAGE_SIZE,
             params_batch_size=self.params.BATCH_SIZE
