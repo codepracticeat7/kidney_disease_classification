@@ -1,98 +1,92 @@
-name: workflow
+name: Train and Deploy on Azure ML + ACI
 
 on:
   push:
-    branches:
-      - main
-    paths-ignore:
-      - 'README.md'
+    branches: ["main"]
+    paths:
+      - "src/**"
+      - "training/**"
+      - "Dockerfile"
+      - "requirements.txt"
+  workflow_dispatch: {}
 
 permissions:
   id-token: write
   contents: read
 
+env:
+  RESOURCE_GROUP: myResourceGroup
+  WORKSPACE_NAME: myAMLWorkspace
+  COMPUTE_NAME: cpu-cluster
+  ACR_NAME: hello1378
+  REGISTRY: hello1378.azurecr.io
+  IMAGE_NAME: imgclassification
+  ACI_NAME: kidneycontainer
+  PORT: 8000
+  CPU: 1
+  MEMORY: 1.5
+
 jobs:
-  integration:
-    name: Continuous Integration
+  train-and-deploy:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      - name: Lint code
-        run: echo "Linting repository"
-
-      - name: Run unit tests
-        run: echo "Running unit tests"
-
-  build-and-push-ecr-image:
-    name: Continuous Delivery
-    needs: integration
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      - name: Install Utilities
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y jq unzip
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-
-      - name: Build, tag, and push image to Amazon ECR
-        id: build-image
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
-          IMAGE_TAG: latest
-        run: |
-          # Build a docker container and
-          # push it to ECR so that it can
-          # be deployed to ECS.
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-          
-          
-  Continuous-Deployment:
-    needs: build-and-push-ecr-image
-    runs-on: self-hosted
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: Azure Login
+        uses: azure/login@v2
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-      
-      
-      - name: Pull latest images
+      - name: Submit training job
         run: |
-         docker pull ${{secrets.AWS_ECR_LOGIN_URI}}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
-         
-      # - name: Stop and remove container if running
-      #   run: |
-      #    docker ps -q --filter "name=cnncls" | grep -q . && docker stop cnncls && docker rm -fv cnncls
-       
-      - name: Run Docker Image to serve users
+          az ml job create --file training/job.yml \
+            -g $RESOURCE_GROUP -w $WORKSPACE_NAME
+
+      - name: Wait for job and download model
         run: |
-         docker run -d -p 8080:8080 --name=cnncls -e 'AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}' -e 'AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}' -e 'AWS_REGION=${{ secrets.AWS_REGION }}'  ${{secrets.AWS_ECR_LOGIN_URI}}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
-      - name: Clean previous images and containers
+          JOB_ID=$(az ml job list -o tsv --query '[0].name')
+          az ml job wait --name $JOB_ID -g $RESOURCE_GROUP -w $WORKSPACE_NAME
+          az ml job download --name $JOB_ID --download-path models/ \
+            -g $RESOURCE_GROUP -w $WORKSPACE_NAME
+          ls -lh models/
+
+      - name: Build & Push Docker Image with trained model
         run: |
-         docker system prune -f
+          GIT_SHA=${GITHUB_SHA::7}
+          IMAGE_TAG="$REGISTRY/$IMAGE_NAME:$GIT_SHA"
+          LATEST_TAG="$REGISTRY/$IMAGE_NAME:latest"
+
+          az acr login --name $ACR_NAME
+          docker build -t $IMAGE_TAG -t $LATEST_TAG .
+          docker push $IMAGE_TAG
+          docker push $LATEST_TAG
+        id: build
+
+      - name: Deploy to ACI
+        run: |
+          if az container show -g $RESOURCE_GROUP -n $ACI_NAME > /dev/null 2>&1; then
+            echo "Updating container..."
+            az container update \
+              --resource-group $RESOURCE_GROUP \
+              --name $ACI_NAME \
+              --image ${{ steps.build.outputs.IMAGE_TAG }}
+          else
+            echo "Creating container..."
+            az container create \
+              --resource-group $RESOURCE_GROUP \
+              --name $ACI_NAME \
+              --image ${{ steps.build.outputs.IMAGE_TAG }} \
+              --registry-login-server $REGISTRY \
+              --ports $PORT \
+              --os-type Linux \
+              --cpu $CPU \
+              --memory $MEMORY \
+              --restart-policy Always
+          fi
+
+      - name: Show Public IP
+        run: |
+          az container show -g $RESOURCE_GROUP -n $ACI_NAME --query ipAddress.ip -o tsv
