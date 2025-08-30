@@ -3,11 +3,7 @@ name: Train and Deploy on Azure ML + ACI
 on:
   push:
     branches: ["main"]
-    paths:
-      - "src/**"
-      - "training/**"
-      - "Dockerfile"
-      - "requirements.txt"
+    
   workflow_dispatch: {}
 
 permissions:
