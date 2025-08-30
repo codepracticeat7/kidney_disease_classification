@@ -33,20 +33,21 @@ class ConfigurationManager:
                                 params_include_top=self.params.INCLUDE_TOP,
                                 params_weights=self.params.WEIGHTS,
                                 params_classes=self.params.CLASSES,
+                                params_loss=self.params.params_loss,
                                 )
         return Preparebasemodelconfigs
     def get_prepare_Trainingconfig(self)->trainingconfig:
         config=self.config.training
         params=self.params
         print(config)
-        training_data=os.path.join(self.config.data_ingestion.unzip_dir,"train")
+        training_data=os.path.join(self.config.data_ingestion.unzip_dir,"training_data")
         Trainingconfig=trainingconfig(root_dir=config.root_dir,trained_model_name=str,
                                       updated_base_model_path=config.updated_base_model_path,
                                       training_data=Path(training_data),
-                                    params_loss=self.params.params_loss,
                                     params_epochs=params.EPOCHS,
                                     params_batch_size=params.BATCH_SIZE,
                                     params_is_augmentation=params.AUGMENTATION,
+                                    params_loss=params.params_loss,
                                     params_image_size=params.IMAGE_SIZE)
         return Trainingconfig
     def get_evaluation_config(self) -> EvaluationConfig:

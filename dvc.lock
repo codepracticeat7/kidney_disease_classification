@@ -1,0 +1,29 @@
+schema: '2.0'
+stages:
+  prepare_base_model:
+    cmd: python src/cnnclassifier/pipelines/stage_02_load_fullmodel.py
+    deps:
+    - path: config/config.yaml
+      hash: md5
+      md5: e9bdfea1a18582f813a452df13dc59e9
+      size: 745
+    - path: src/cnnclassifier/pipelines/stage_02_load_fullmodel.py
+      hash: md5
+      md5: f6ba991d85d568b75e0629c2e6f989d5
+      size: 1083
+    params:
+      params.yaml:
+        CLASSES: 2
+        IMAGE_SIZE:
+        - 224
+        - 224
+        - 3
+        INCLUDE_TOP: false
+        LEARNING_RATE: 0.01
+        WEIGHTS: imagenet
+    outs:
+    - path: artifacts/model
+      hash: md5
+      md5: 9139eba7a37786a720cb138cdb3b0410.dir
+      size: 118054560
+      nfiles: 2

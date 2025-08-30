@@ -8,7 +8,7 @@ from tensorflow.keras.callbacks import EarlyStopping
 import threading
 
 
-from cnnclassifier.components.cpu_monitor import CPUUsageMonitor,  CPUMonitorCallback,gmail_service# assuming your monitor class is in cpu_monitor.py
+#from cnnclassifier.components.cpu_monitor import CPUUsageMonitor,  CPUMonitorCallback,gmail_service# assuming your monitor class is in cpu_monitor.py
 
 
 
@@ -64,17 +64,17 @@ def main():
 
     steps_per_epoch = train_generator.samples // train_generator.batch_size
     validation_steps =valid_generator.samples // valid_generator.batch_size
-    service = gmail_service()
+    #service = gmail_service()
 
     # 2. Start CPU Monitor in background
-    monitor = CPUUsageMonitor(
-        gmail_service=service,
-        sender=os.getenv("sender"),     # replace with your Gmail
-        receiver=os.getenv("receiver"),     # replace with recipient
-        threshold=85,
-        check_interval=5
-    )
-    monitor.start()
+    #monitor = CPUUsageMonitor(
+        #gmail_service=service,
+       # sender=os.getenv("sender"),     # replace with your Gmail
+        #receiver=os.getenv("receiver"),     # replace with recipient
+        #threshold=85,
+        #check_interval=5
+      #)
+    #monitor.start()
     
     
 
@@ -88,7 +88,6 @@ def main():
                     validation_steps=validation_steps,
                     validation_data=valid_generator,
                     callbacks=[
-                CPUMonitorCallback(monitor),
                 EarlyStopping(
                     monitor="val_loss",       # metric to watch
                     patience=3,               # stop after 3 bad epochs

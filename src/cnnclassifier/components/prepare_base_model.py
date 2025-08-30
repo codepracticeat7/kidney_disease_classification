@@ -38,7 +38,7 @@ class PreparebaseModel:
                         }
      
         full_model.compile(optimizer=tf.keras.optimizers.SGD(learning_rate=learning_rate),
-                           loss=loss_map[PreparebaseModel.self.config.params_loss],
+                           loss=loss_map["binary_crossentropy"],
                            metrics=["accuracy"])
         full_model.summary()
         return full_model

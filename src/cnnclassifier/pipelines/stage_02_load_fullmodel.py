@@ -22,7 +22,7 @@ class load_full_model_pipeline:
 if __name__== "__main__":
     try:
 
-        full_model=load_full_model_pipeline()
+        full_model=load_full_model_pipeline
         full_model.load_full_model_pipeline()
     except Exception as e:
         logger.exception(e)

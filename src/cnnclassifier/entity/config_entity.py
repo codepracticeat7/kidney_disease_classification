@@ -18,6 +18,7 @@ class Preparebasemodelconfig:
     params_include_top: bool
     params_weights: str
     params_classes: int
+    params_loss: str
 
 @dataclass(frozen=True)
 class trainingconfig:
@@ -39,3 +40,4 @@ class EvaluationConfig:
     params_image_size: list
     params_batch_size: int
     testing_data: Path
+    

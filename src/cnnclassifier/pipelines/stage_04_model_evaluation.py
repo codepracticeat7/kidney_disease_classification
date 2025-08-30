@@ -17,9 +17,9 @@ class EvaluationPipeline:
         evaluation.evaluation()
         evaluation.save_score()
         
-        dagshub.init(repo_owner='albertmichael', repo_name='kidney_disease_classification', mlflow=True)
+        #dagshub.init(repo_owner='albertmichael', repo_name='kidney_disease_classification', mlflow=True)
 
-        evaluation.log_into_mlflow()
+        #evaluation.log_into_mlflow()
 
 
 

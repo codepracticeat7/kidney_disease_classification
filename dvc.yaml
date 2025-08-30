@@ -1,0 +1,53 @@
+stages:
+  
+
+
+  prepare_base_model:
+    cmd: python src/cnnclassifier/pipelines/stage_02_load_fullmodel.py
+    deps:
+      - src/cnnclassifier/pipelines/stage_02_load_fullmodel.py
+      - config/config.yaml
+    params:
+      - IMAGE_SIZE
+      - INCLUDE_TOP
+      - CLASSES
+      - WEIGHTS
+      - LEARNING_RATE
+    outs:
+      - artifacts/model
+
+
+
+  training:
+    cmd: python src/cnnclassifier/pipelines/stage_03_training.py
+    deps:
+      - src/cnnclassifier/pipelines/stage_03_training.py
+      - config/config.yaml
+      - artifacts/data_ingestion/training_data  
+      - artifacts/model
+    params:
+      - IMAGE_SIZE
+      - EPOCHS
+      - BATCH_SIZE
+      - AUGMENTATION
+    outs:
+      - artifacts/models
+
+
+
+
+  evaluation:
+    cmd: python src/cnnclassifier/pipeline/stage_04_model_evaluation.py
+    deps:
+      - src/cnnclassifier/pipeline/stage_04_model_evaluation.py
+      - config/config.yaml
+      - artifacts/Test_Data/test
+      - artifacts/model/latest_model
+    params:
+      - IMAGE_SIZE
+      - BATCH_SIZE
+    metrics:
+    - scores.json:
+        cache: false
+
+
