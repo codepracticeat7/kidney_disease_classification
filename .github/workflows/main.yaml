@@ -39,19 +39,20 @@ jobs:
       - name: Submit Azure ML job
         run: |
           az extension add -n ml
-          az ml job create \
+          JOB_ID=$(az ml job create \
             --file ./training/job.yaml \
-            --resource-group myResourceGroup \
-            --workspace-name myAMLWorkspace
-
+            --resource-group $RESOURCE_GROUP \
+            --workspace-name $WORKSPACE_NAME \
+            --query name -o tsv)
+          echo "JOB_ID=$JOB_ID" >> $GITHUB_ENV
 
       - name: Wait for job and download model
         run: |
-          JOB_ID=$(az ml job list -o tsv --query '[0].name')
           az ml job wait --name $JOB_ID -g $RESOURCE_GROUP -w $WORKSPACE_NAME
           az ml job download --name $JOB_ID --download-path models/ \
             -g $RESOURCE_GROUP -w $WORKSPACE_NAME
           ls -lh models/
+
 
       - name: Build & Push Docker Image with trained model
         run: |
