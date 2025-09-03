@@ -19,4 +19,3 @@ training:
   trained_model_name: vgg16model.h5
 testing:
   testing_data: artifacts\Test_Data\test
-

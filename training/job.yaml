@@ -1,0 +1,11 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandJob.schema.json
+command: |
+  pip install dvc[azure]  
+  dvc repro evaluation
+environment:
+  image: mcr.microsoft.com/azureml/openmpi4.1.0-ubuntu20.04:latest
+  conda_file: training/env.yml
+compute: cpu-cluster
+outputs:
+  model_output:
+    mode: upload

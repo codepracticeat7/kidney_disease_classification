@@ -37,7 +37,7 @@ stages:
 
 
   evaluation:
-    cmd: python src/cnnclassifier/pipeline/stage_04_model_evaluation.py
+    cmd: python src/cnnclassifier/pipelines/stage_04_model_evaluation.py
     deps:
       - src/cnnclassifier/pipeline/stage_04_model_evaluation.py
       - config/config.yaml

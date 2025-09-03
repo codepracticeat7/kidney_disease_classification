@@ -1,6 +1,7 @@
 venv/
  mlruns/
 secrets.md
+AZURE.txt
 kidney/
 # Byte-compiled / optimized / DLL files
 __pycache__/
