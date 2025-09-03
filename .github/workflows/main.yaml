@@ -39,9 +39,9 @@ jobs:
       - name: Submit Azure ML job
         run: |
           az extension add -n ml
-          az ml job create `
-            --file ./training/job.yaml `
-            --resource-group myResourceGroup `
+          az ml job create \
+            --file ./training/job.yaml \
+            --resource-group myResourceGroup \
             --workspace-name myAMLWorkspace
 
 
