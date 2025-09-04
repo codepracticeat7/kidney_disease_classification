@@ -7,3 +7,6 @@ CLASSES: 2
 WEIGHTS: imagenet
 LEARNING_RATE: 0.01
 params_loss: binary_crossentropy
+
+
+

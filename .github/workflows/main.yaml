@@ -36,22 +36,27 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Submit Azure ML job
+      - name: Submit Azure ML job and stream logs
         run: |
           az extension add -n ml
           JOB_ID=$(az ml job create \
             --file ./training/job.yaml \
             --resource-group $RESOURCE_GROUP \
             --workspace-name $WORKSPACE_NAME \
+            --stream \
             --query name -o tsv)
+          echo "Submitted job: $JOB_ID"
           echo "JOB_ID=$JOB_ID" >> $GITHUB_ENV
 
-      - name: Wait for job and download model
+      - name: Download model after job completion
         run: |
-          az ml job wait --name $JOB_ID -g $RESOURCE_GROUP -w $WORKSPACE_NAME
-          az ml job download --name $JOB_ID --download-path models/ \
-            -g $RESOURCE_GROUP -w $WORKSPACE_NAME
+          az ml job download \
+            --name $JOB_ID \
+            --resource-group $RESOURCE_GROUP \
+            --workspace-name $WORKSPACE_NAME \
+            --download-path models/
           ls -lh models/
+
 
 
       - name: Build & Push Docker Image with trained model
