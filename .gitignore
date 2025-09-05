@@ -3,6 +3,10 @@ venv/
 secrets.md
 AZURE.txt
 kidney/
+azure_services.ps1
+list-azure-resources.ps1
+cleanup.ps1
+*.ps1
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
