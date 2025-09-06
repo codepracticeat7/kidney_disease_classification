@@ -11,6 +11,7 @@ permissions:
   contents: read
 
 env:
+  SUBSCRIPTION  : 1bbb528b-f18d-4f02-a91e-a64d12675029
   RESOURCE_GROUP: myResourceGroup
   WORKSPACE_NAME: myAMLWorkspace
   COMPUTE_NAME: cpu-cluster
