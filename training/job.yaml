@@ -2,6 +2,10 @@ $schema: https://azuremlschemas.azureedge.net/latest/commandJob.schema.json
 # Upload whole repo into the Azure ML job container
 code: .
 command: |
+  pwd
+  ls -la
+  ls -la .dvc
+  dvc repro
   python -m venv ~/venv
   source ~/venv/bin/activate
   pip install --upgrade pip
