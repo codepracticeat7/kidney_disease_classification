@@ -19,3 +19,4 @@ compute: cpu-cluster
 outputs:
   model_output:
     mode: upload
+  
